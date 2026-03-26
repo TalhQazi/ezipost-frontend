@@ -1,42 +1,18 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   FileCheck,
   CreditCard,
   ShieldX,
   History,
   CheckCircle,
-  AlertTriangle,
-  XCircle,
-  Clock,
-  Search,
-  Filter,
   Download,
+  Filter,
+  Search,
   ChevronDown,
-  MoreHorizontal,
 } from "lucide-react";
 import Table from "../components/table";
-
-// ─── MOCK DATA ────────────────────────────────────────────────────────────────
-
-const allMails = [
-  { id: "MP00010022", tracking: "EZN1GI5VZFR4", time: "4:39:27 PM", mailClass: "Express",       paid: 1.96, required: 2.75, shortfall: 0.00,  escrow: null,       status: "Processed"   },
-  { id: "MP00010020", tracking: "EZR784W7D31B", time: "4:36:38 PM", mailClass: "Priority",      paid: 3.05, required: 5.08, shortfall: 0.00,  escrow: null,       status: "Pending"     },
-  { id: "MP00010003", tracking: "EZSG0C7KRSD1G",time: "4:35:05 PM", mailClass: "Express",       paid: 3.43, required: 2.14, shortfall: 0.00,  escrow: null,       status: "Pending"     },
-  { id: "MP00010018", tracking: "EZ345CSJE9XKF", time: "4:33:37 PM", mailClass: "Priority",     paid: 3.18, required: 4.59, shortfall: 0.00,  escrow: null,       status: "Failed"      },
-  { id: "MP00010017", tracking: "EZ39Y6RJSZSAP", time: "4:32:08 PM", mailClass: "International",paid: 2.86, required: 3.82, shortfall: 0.96,  escrow: "EA-005164",status: "Escrow Used" },
-  { id: "MP00010016", tracking: "EZCUC0CZVQM5U", time: "4:30:30 PM", mailClass: "Standard",    paid: 5.06, required: 2.78, shortfall: -2.28, escrow: "EA-005866",status: "Escrow Used" },
-  { id: "MP00010015", tracking: "EZ6TE2HDJ0GR6", time: "4:27:16 PM", mailClass: "Priority",    paid: 3.60, required: 1.22, shortfall: -2.28, escrow: "EA-005565",status: "Escrow Used" },
-  { id: "MP00010014", tracking: "EZMQWERTY1234", time: "4:25:00 PM", mailClass: "Standard",    paid: 1.50, required: 1.50, shortfall: 0.00,  escrow: null,       status: "Processed"   },
-  { id: "MP00010013", tracking: "EZABC9876DEF",  time: "4:22:44 PM", mailClass: "Express",      paid: 4.20, required: 4.20, shortfall: 0.00,  escrow: null,       status: "Processed"   },
-  { id: "MP00010012", tracking: "EZXYZ5678GHI",  time: "4:20:11 PM", mailClass: "International",paid: 6.00, required: 8.00, shortfall: 2.00,  escrow: "EA-005100",status: "Escrow Used" },
-  { id: "MP00010011", tracking: "EZLMN2345OPQ",  time: "4:18:55 PM", mailClass: "Priority",    paid: 2.10, required: 3.00, shortfall: 0.90,  escrow: null,       status: "Failed"      },
-  { id: "MP00010010", tracking: "EZRST6789UVW",  time: "4:16:30 PM", mailClass: "Standard",    paid: 0.90, required: 0.90, shortfall: 0.00,  escrow: null,       status: "Processed"   },
-  { id: "MP00010009", tracking: "EZPQR1122STU",  time: "4:14:08 PM", mailClass: "Express",      paid: 3.75, required: 3.75, shortfall: 0.00,  escrow: null,       status: "Pending"     },
-  { id: "MP00010008", tracking: "EZJKL3344MNO",  time: "4:12:00 PM", mailClass: "Priority",    paid: 5.50, required: 5.50, shortfall: 0.00,  escrow: null,       status: "Processed"   },
-  { id: "MP00010007", tracking: "EZFGH5566IJK",  time: "4:09:33 PM", mailClass: "Standard",    paid: 1.20, required: 2.00, shortfall: 0.80,  escrow: null,       status: "Failed"      },
-  { id: "MP00010006", tracking: "EZCDE7788FGH",  time: "4:07:17 PM", mailClass: "International",paid: 7.00, required: 7.00, shortfall: 0.00,  escrow: null,       status: "Processed"   },
-  { id: "MP00010005", tracking: "EZABC9900DEF",  time: "4:05:44 PM", mailClass: "Express",      paid: 2.50, required: 2.50, shortfall: 0.00,  escrow: null,       status: "Pending"     },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMails } from "../redux/mailSlice";
 
 const STATUS_FILTERS = ["All Statuses", "Processed", "Escrow Used", "Failed", "Pending"];
 
@@ -44,10 +20,10 @@ const STATUS_FILTERS = ["All Statuses", "Processed", "Escrow Used", "Failed", "P
 
 const StatusBadge = ({ status }) => {
   const cfg = {
-    Processed:    { bg: "bg-emerald-50",  text: "text-emerald-600", border: "border-emerald-200", dot: "bg-emerald-500" },
-    "Escrow Used":{ bg: "bg-yellow-50",   text: "text-yellow-600",  border: "border-yellow-200",  dot: "bg-yellow-500"  },
-    Failed:       { bg: "bg-red-50",      text: "text-red-600",     border: "border-red-200",     dot: "bg-red-500"     },
-    Pending:      { bg: "bg-blue-50",     text: "text-blue-600",    border: "border-blue-200",    dot: "bg-blue-400"    },
+    Processed:     { bg: "bg-emerald-50", text: "text-emerald-600", border: "border-emerald-200", dot: "bg-emerald-500" },
+    "Escrow Used": { bg: "bg-yellow-50",  text: "text-yellow-600",  border: "border-yellow-200",  dot: "bg-yellow-500"  },
+    Failed:        { bg: "bg-red-50",     text: "text-red-600",     border: "border-red-200",     dot: "bg-red-500"     },
+    Pending:       { bg: "bg-blue-50",    text: "text-blue-600",    border: "border-blue-200",    dot: "bg-blue-400"    },
   }[status] || {};
 
   return (
@@ -81,23 +57,33 @@ const MailProcessing = () => {
   const [page, setPage] = useState(1);
   const PER_PAGE = 10;
 
-  const counts = useMemo(() => ({
-    processed:   allMails.filter(m => m.status === "Processed").length,
-    escrowUsed:  allMails.filter(m => m.status === "Escrow Used").length,
-    failed:      allMails.filter(m => m.status === "Failed").length,
-    pending:     allMails.filter(m => m.status === "Pending").length,
-  }), []);
+  const dispatch = useDispatch();
+  const { mails = [], loading } = useSelector((state) => state.mail);
 
+  useEffect(() => {
+    dispatch(fetchMails({ search, status: statusFilter }));
+  }, [search, statusFilter, dispatch]);
+
+  // ── Counts (derived from all mails from Redux) ──
+  const counts = useMemo(() => ({
+    processed:  mails.filter(m => m.status === "Processed").length,
+    escrowUsed: mails.filter(m => m.status === "Escrow Used").length,
+    failed:     mails.filter(m => m.status === "Failed").length,
+    pending:    mails.filter(m => m.status === "Pending").length,
+  }), [mails]);
+
+  // ── Client-side filtering (if backend doesn't filter) ──
   const filtered = useMemo(() => {
-    return allMails.filter(m => {
-      const matchSearch =
-        m.id.toLowerCase().includes(search.toLowerCase()) ||
-        m.tracking.toLowerCase().includes(search.toLowerCase());
-      const matchStatus =
+    return mails.filter(m => {
+      const matchesStatus =
         statusFilter === "All Statuses" || m.status === statusFilter;
-      return matchSearch && matchStatus;
+      const matchesSearch =
+        !search ||
+        m.id?.toLowerCase().includes(search.toLowerCase()) ||
+        m.tracking?.toLowerCase().includes(search.toLowerCase());
+      return matchesStatus && matchesSearch;
     });
-  }, [search, statusFilter]);
+  }, [mails, search, statusFilter]);
 
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
@@ -111,7 +97,9 @@ const MailProcessing = () => {
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = "mail_processing.csv"; a.click();
+    a.href = url;
+    a.download = "mail_processing.csv";
+    a.click();
     URL.revokeObjectURL(url);
   };
 
@@ -134,10 +122,10 @@ const MailProcessing = () => {
 
       {/* ── STAT CARDS ── */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard icon={FileCheck} iconBg="bg-emerald-50" iconColor="text-emerald-500" label="Processed" value={counts.processed} />
+        <StatCard icon={FileCheck} iconBg="bg-emerald-50" iconColor="text-emerald-500" label="Processed"   value={counts.processed}  />
         <StatCard icon={CreditCard} iconBg="bg-yellow-50" iconColor="text-yellow-500" label="Escrow Used" value={counts.escrowUsed} />
-        <StatCard icon={ShieldX} iconBg="bg-red-50" iconColor="text-red-500" label="Failed" value={counts.failed} />
-        <StatCard icon={History} iconBg="bg-blue-50" iconColor="text-blue-500" label="Pending" value={counts.pending} />
+        <StatCard icon={ShieldX}    iconBg="bg-red-50"    iconColor="text-red-500"    label="Failed"      value={counts.failed}     />
+        <StatCard icon={History}    iconBg="bg-blue-50"   iconColor="text-blue-500"   label="Pending"     value={counts.pending}    />
       </div>
 
       {/* ── SEARCH & FILTER ── */}
@@ -184,7 +172,6 @@ const MailProcessing = () => {
         </div>
       </div>
 
-
       {/* ── TABLE ── */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden p-4">
         <Table
@@ -225,14 +212,22 @@ const MailProcessing = () => {
               label: "SHORTFALL",
               render: (m) => (
                 <span className={`font-semibold ${m.shortfall > 0 ? "text-red-500" : "text-slate-400"}`}>
-                  {m.shortfall > 0 ? `$${m.shortfall.toFixed(2)}` : m.shortfall < 0 ? `$${m.shortfall.toFixed(2)}` : "$0.00"}
+                  {m.shortfall > 0
+                    ? `$${m.shortfall.toFixed(2)}`
+                    : m.shortfall < 0
+                    ? `$${m.shortfall.toFixed(2)}`
+                    : "$0.00"}
                 </span>
               ),
             },
             {
               key: "escrow",
               label: "ESCROW ACCOUNT",
-              render: (m) => <span className="text-slate-500 text-xs font-mono">{m.escrow || <span className="text-slate-300">—</span>}</span>,
+              render: (m) => (
+                <span className="text-slate-500 text-xs font-mono">
+                  {m.escrow || <span className="text-slate-300">—</span>}
+                </span>
+              ),
             },
             {
               key: "status",
@@ -245,17 +240,26 @@ const MailProcessing = () => {
         {/* ── PAGINATION ── */}
         <div className="flex items-center justify-between px-5 py-4 border-t border-slate-100">
           <p className="text-xs text-slate-400 font-medium">
-            Showing <span className="font-bold text-slate-600">{Math.min((page-1)*PER_PAGE+1, filtered.length)}</span>–<span className="font-bold text-slate-600">{Math.min(page*PER_PAGE, filtered.length)}</span> of <span className="font-bold text-slate-600">{filtered.length}</span> records
+            Showing{" "}
+            <span className="font-bold text-slate-600">
+              {filtered.length === 0 ? 0 : (page - 1) * PER_PAGE + 1}
+            </span>
+            –
+            <span className="font-bold text-slate-600">
+              {Math.min(page * PER_PAGE, filtered.length)}
+            </span>{" "}
+            of{" "}
+            <span className="font-bold text-slate-600">{filtered.length}</span> records
           </p>
           <div className="flex items-center gap-1">
             <button
-              onClick={() => setPage(p => Math.max(1, p-1))}
+              onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
               className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition"
             >
               ← Prev
             </button>
-            {Array.from({ length: totalPages }, (_, i) => i+1).map(p => (
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
               <button
                 key={p}
                 onClick={() => setPage(p)}
@@ -266,7 +270,7 @@ const MailProcessing = () => {
               </button>
             ))}
             <button
-              onClick={() => setPage(p => Math.min(totalPages, p+1))}
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages || totalPages === 0}
               className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition"
             >
