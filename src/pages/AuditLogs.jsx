@@ -208,28 +208,6 @@ const AuditLogs = () => {
         ))}
       </div>
 
-      {/* ── SEVERITY BREAKDOWN BAR ── */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Severity Distribution</p>
-          <p className="text-xs text-slate-400 font-medium">{total} total events</p>
-        </div>
-        <div className="flex h-3 rounded-full overflow-hidden gap-0.5">
-          {severityBar.map((s, i) => (
-            <div key={i} className={`${s.color} rounded-full transition-all`} style={{ width: `${s.pct}%` }} />
-          ))}
-        </div>
-        <div className="flex items-center gap-5 mt-3 flex-wrap">
-          {severityBar.map((s, i) => (
-            <div key={i} className="flex items-center gap-1.5 text-xs text-slate-500">
-              <span className={`w-2.5 h-2.5 rounded-full ${s.color}`}></span>
-              <span className="font-semibold">{s.label}</span>
-              <span className="font-bold text-slate-700">({s.count})</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* ── FILTERS ── */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
         <div className="flex-1 flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5">

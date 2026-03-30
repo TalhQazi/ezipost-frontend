@@ -826,13 +826,13 @@ const Transactions = () => {
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50">
+            <thead className="bg-black text-white">
+              <tr className="border-b border-slate-800">
                 {/* Checkbox */}
                 <th className="px-5 py-3.5 w-10">
-                  <button onClick={toggleAll} className="text-slate-400 hover:text-slate-600 transition">
-                    {allSelected ? <CheckSquare size={16} className="text-slate-900" /> :
-                     someSelected ? <Minus size={16} className="text-slate-500" /> :
+                  <button onClick={toggleAll} className="text-slate-400 hover:text-white transition">
+                    {allSelected ? <CheckSquare size={16} className="text-white" /> :
+                     someSelected ? <Minus size={16} className="text-slate-300" /> :
                      <Square size={16} />}
                   </button>
                 </th>
@@ -840,8 +840,8 @@ const Transactions = () => {
                   <th
                     key={col.key}
                     onClick={() => handleSort(col)}
-                    className={`px-4 py-3.5 text-xs font-extrabold text-slate-400 uppercase tracking-wider whitespace-nowrap
-                      ${col.sortable ? "cursor-pointer hover:text-slate-600 select-none" : ""}`}
+                    className={`px-4 py-3.5 text-xs font-bold text-white/70 uppercase tracking-wider whitespace-nowrap
+                      ${col.sortable ? "cursor-pointer hover:text-white select-none" : ""}`}
                   >
                     <span className="flex items-center">
                       {col.label}

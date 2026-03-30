@@ -426,9 +426,13 @@ const ExecuteResultModal = ({ result, onClose }) => {
               <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Preview (first 5 records)</p>
               <div className="overflow-x-auto rounded-xl border border-gray-100">
                 <table className="w-full text-xs">
-                  <thead><tr className="bg-gray-50">{Object.keys(data[0]).slice(0, 6).map(k => (
-                    <th key={k} className="px-3 py-2 text-left font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">{k}</th>
-                  ))}</tr></thead>
+                  <thead className="bg-black text-white">
+                    <tr>
+                      {Object.keys(data[0]).slice(0, 6).map(k => (
+                        <th key={k} className="px-3 py-2 text-left font-bold uppercase tracking-wider whitespace-nowrap">{k}</th>
+                      ))}
+                    </tr>
+                  </thead>
                   <tbody className="divide-y divide-gray-50">{data.slice(0, 5).map((row, i) => (
                     <tr key={i} className="hover:bg-gray-50 transition">{Object.values(row).slice(0, 6).map((v, j) => (
                       <td key={j} className="px-3 py-2 text-gray-600 font-mono whitespace-nowrap">
@@ -657,17 +661,9 @@ export default function ReportsPage() {
             <p className="text-gray-400 text-sm mt-1 font-medium">Manage, schedule and execute reports across all data sources</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <button onClick={() => loadData()} disabled={loading}
-              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold shadow-sm transition">
-              <Ico d={IC.refresh} size={14} className={loading ? "animate-spin" : ""} /> Refresh
-            </button>
             <button onClick={handleExport}
               className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold shadow-sm transition">
               <Ico d={IC.download} size={14} /> Export CSV
-            </button>
-            <button onClick={() => setShowCreate(true)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-extrabold shadow-lg transition">
-              <Ico d={IC.plus} size={15} /> New Report
             </button>
           </div>
         </div>
@@ -834,10 +830,10 @@ export default function ReportsPage() {
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
-                  <thead>
-                    <tr className="border-b border-gray-100 bg-gray-50/60">
+                  <thead className="bg-black text-white">
+                    <tr className="border-b border-slate-800">
                       {["REPORT", "TYPE", "SOURCE", "STATUS", "LAST RUN", "NEXT RUN", "SCHEDULE", "ACTIONS"].map(col => (
-                        <th key={col} className="px-5 py-3.5 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                        <th key={col} className="px-5 py-3.5 text-[11px] font-bold uppercase tracking-widest whitespace-nowrap">
                           {col}
                         </th>
                       ))}

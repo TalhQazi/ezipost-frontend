@@ -39,16 +39,7 @@ export default function Sidebar({
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear();
-        Swal.fire({
-          title: "Logged Out!",
-          text: "You have been successfully logged out.",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-        setTimeout(() => {
-          navigate("/login");
-        }, 1500);
+        navigate("/logout");
       }
     });
   };

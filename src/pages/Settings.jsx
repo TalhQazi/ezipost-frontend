@@ -480,25 +480,6 @@ export default function SettingsPage() {
               {categories.length > 0 && <span className="ml-2 font-bold text-gray-600">· {categories.reduce((s, c) => s + (c.totalSettings || 0), 0)} total settings</span>}
             </p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <button onClick={loadSettings} disabled={loading}
-              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold shadow-sm transition">
-              <Ico d={IC.refresh} size={14} className={loading ? "animate-spin" : ""} /> Refresh
-            </button>
-            <button onClick={handleExport} disabled={exporting}
-              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold shadow-sm transition">
-              <Ico d={IC.download} size={14} className={exporting ? "animate-pulse" : ""} />
-              {exporting ? "Exporting..." : "Export"}
-            </button>
-            <button onClick={() => setShowImport(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold shadow-sm transition">
-              <Ico d={IC.upload} size={14} /> Import
-            </button>
-            <button onClick={() => setConfirmReset(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-red-200 hover:bg-red-50 text-red-500 rounded-xl text-sm font-bold shadow-sm transition">
-              <Ico d={IC.reset} size={14} /> Reset Defaults
-            </button>
-          </div>
         </div>
 
         {/* ── CATEGORY OVERVIEW CARDS ── */}
