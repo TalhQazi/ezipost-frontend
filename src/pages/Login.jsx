@@ -22,6 +22,7 @@ export default function Login() {
     setTimeout(() => {
       setLoading(false);
       if (form.email === "admin@ezpost.com" && form.password === "admin123") {
+        localStorage.setItem("isAuth", "true");
         navigate("/dashboard");
       } else {
         setError("Invalid credentials. Try admin@ezpost.com / admin123");
